@@ -26,7 +26,33 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
   let mut contents = String::new();
   f.read_to_string(&mut contents)?;
 
-  println!("With text:\n{}", contents);
+  for line in search(&config.query, &contents) {
+    println!("{}", line);
+  }
 
   Ok(())
+}
+
+// 반환 벡터에 contents를 참조하는 문자열 조각이 들어있어서 라이프타임을 명시함
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+  contents
+    .lines()
+    .filter(|line| line.contains(query))
+    .collect()
+}
+
+#[cfg(test)]
+mod test {
+  use super::*;
+
+  #[test]
+  fn one_result() {
+    let query = "duct";
+    let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+    assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+  }
 }
