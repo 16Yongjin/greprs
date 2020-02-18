@@ -15,7 +15,6 @@ fn main() {
 
     if let Err(e) = greprs::run(config) {
         println!("Application error: {}", e);
-
         process::exit(1);
     }
 }
